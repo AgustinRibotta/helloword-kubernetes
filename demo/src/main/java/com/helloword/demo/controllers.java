@@ -19,5 +19,10 @@ public class controllers {
         return new String("Hello, Agustin");
     }
 
+    @GetMapping("/bye")
+    public String helloanames() {
+        return new String("Bye, Agustin");
+    }
+
 
 }
