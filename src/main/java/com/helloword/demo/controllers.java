@@ -24,5 +24,9 @@ public class controllers {
         return new String("Bye, Agustin");
     }
 
+    @GetMapping("/logro")
+    public String logro () {
+        return new String ("Lo logramos");
+    }
 
 }
