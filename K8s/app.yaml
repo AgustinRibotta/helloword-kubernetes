@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/AgustinRibotta/demo
     targetRevision: main
-    path: k8s  # Folder where your Kubernetes manifests are
+    path: "" 
   destination:
     server: https://kubernetes.default.svc
     namespace: agustin-dev
