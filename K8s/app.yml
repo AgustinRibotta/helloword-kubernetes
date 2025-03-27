@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: springboot-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/AgustinRibotta/demo
+    targetRevision: main
+    path: k8s  # Folder where your Kubernetes manifests are
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: agustin-dev
+  syncPolicy:
+    automated:  # Automatically deploy new changes
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
