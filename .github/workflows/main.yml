@@ -49,6 +49,11 @@ jobs:
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
-          git add kubernetes/deployment.yaml  
-          git commit -m "Update image to version $VERSION"  
-          git push origin main  
+          git remote set-url origin git@github.com:AgustinRibotta/demo.git
+          git add kubernetes/deployment.yaml
+          if git diff --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update image to version $VERSION"
+            git push origin main
+          fi
