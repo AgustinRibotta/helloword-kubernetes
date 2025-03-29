@@ -57,14 +57,14 @@ jobs:
         run: git status
 
       # Step 7: Commit the changes and push to the repository
-      - name: Commit and Push Changes
-        run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git remote set-url origin git@github.com:AgustinRibotta/demo.git
-          if git diff --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -a -m "Update image to version $VERSION"
-            git push origin main
-          fi
+     # - name: Commit and Push Changes
+      #  run: |
+       #   git config --global user.email "github-actions@github.com"
+        #  git config --global user.name "GitHub Actions"
+         # git remote set-url origin git@github.com:AgustinRibotta/demo.git
+          #if git diff --quiet; then
+           # echo "No changes to commit"
+         # else
+          #  git commit -a -m "Update image to version $VERSION"
+          #  git push origin main
+          #fi
