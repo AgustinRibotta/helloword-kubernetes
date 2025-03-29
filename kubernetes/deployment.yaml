@@ -14,10 +14,11 @@ spec:
     spec:
       containers:
         - name: springboot-app
-          image: agustinribotta/springboot-app:20250329205239
+          image: agustinribotta/springboot-app:20250329205315
           imagePullPolicy: Always 
           ports:
             - containerPort: 8080
+
 
 
 
