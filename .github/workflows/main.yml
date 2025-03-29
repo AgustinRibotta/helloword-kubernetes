@@ -58,5 +58,5 @@ jobs:
           else
             git add kubernetes/deployment.yaml
             git commit -m "Update image to version $VERSION"
-            git push origin dev  # Solo push si hay cambios
+            git push origin main  # Solo push si hay cambios
           fi
