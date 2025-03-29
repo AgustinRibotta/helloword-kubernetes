@@ -33,7 +33,7 @@ jobs:
       # Step 4: Update the Docker image version in the Kubernetes deployment file
       - name: Update Docker Image Version in Deployment YAML
         run: |
-          # The VERSION variable is already available as an environment variable
+          VERSION=${{ env.VERSION }}  # Access the VERSION environment variable
           sed -i "s|agustinribotta/springboot-app:.*|agustinribotta/springboot-app:$VERSION|" kubernetes/deployment.yaml
 
       # Step 5: Commit the changes and push to the repository
