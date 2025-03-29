@@ -49,9 +49,6 @@ jobs:
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
-          git add kubernetes/deployment.yaml  # Add changed deployment.yaml file
-          if git diff --quiet; then
-            echo "No changes to commit"  # If no changes, skip commit
-          else
-            git commit -m "Update image to version $VERSION"  # Commit with new version
-            git push origin main  # Push changes to the main branch
+          git add kubernetes/deployment.yaml  # Stage the modified deployment.yaml
+          git commit -m "Update image to version $VERSION"  # Commit the changes with version info
+          git push origin main  # Push changes to the main branch
