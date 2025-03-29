@@ -11,7 +11,7 @@ public class controllers {
 
     @GetMapping()
     public String hello() {
-        return new String("Hello, It the Spring Boot project");
+        return new String("Lo logre");
     }
     
     @GetMapping("/hello")
