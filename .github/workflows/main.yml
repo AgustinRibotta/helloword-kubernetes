@@ -33,12 +33,24 @@ jobs:
       # Step 4: Verify if the VERSION variable is correctly passed
       - name: Verify VERSION variable
         run: echo "The generated version is:$VERSION"
+        
 
-      # Step 5: Update the Docker image version in the Kubernetes deployment file
+      - name: Check deployment.yaml before modification
+        run: |
+          echo "Before modification:"
+          cat kubernetes/deployment.yaml
+      
       - name: Update Docker Image Version in Deployment YAML
         run: |
-          VERSION=${{ env.VERSION }}  # Access the VERSION environment variable
+          VERSION=${{ env.VERSION }}
           sed -i "s|agustinribotta/springboot-app:.*|agustinribotta/springboot-app:$VERSION|" kubernetes/deployment.yaml
+          echo "" >> kubernetes/deployment.yaml  # Add a forced change (e.g., new line)
+        
+      - name: Check deployment.yaml after modification
+        run: |
+          echo "After modification:"
+          cat kubernetes/deployment.yaml
+          
 
       # Step 6: Check if there are changes
       - name: Check if there are changes
