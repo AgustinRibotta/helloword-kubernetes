@@ -33,7 +33,19 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          VERSION=$(date +'%Y%m%d%H%M%S')  # Unique version based on timestamp
+          VERSION=$(date +'%Y%m%d%H%M%S')  # Genera un tag único con la fecha y hora
           docker build -t agustinribotta/springboot-app:$VERSION .
           docker push agustinribotta/springboot-app:$VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV  # Guarda la versión para los siguientes pasos
 
+      - name: Update Kubernetes Deployment File
+        run: |
+          sed -i "s|image: agustinribotta/springboot-app:.*|image: agustinribotta/springboot-app:${{ env.VERSION }}|g" kubernetes/deployment.yaml
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add kubernetes/deployment.yaml
+          git commit -m "Update image to version ${{ env.VERSION }}"
+          git push origin main
