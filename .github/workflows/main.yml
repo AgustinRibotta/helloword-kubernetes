@@ -10,9 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository to work with the code
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      # Step 2: Read the current version from version.txt, default to 0 if not found
       - name: Read the current version from version.txt
         id: get_version
         run: |
@@ -24,29 +26,30 @@ jobs:
           echo "Current version: $VERSION"
           echo "::set-output name=version::$VERSION"
 
+      # Step 3: Increment the version by 1
       - name: Increment version
         id: increment_version
         run: |
-          VERSION=$((${{ steps.get_version.outputs.version }} + 1))
+          VERSION=$((VERSION + 1))
           echo "New version: $VERSION"
-          echo $VERSION > version.txt
+          echo $VERSION > version.txt  # Save the incremented version to version.txt
           echo "::set-output name=version::$VERSION"
 
+      # Step 4: Update the Docker image version in the Kubernetes deployment file
       - name: Update Docker Image Version in Deployment YAML
         run: |
           VERSION=${{ steps.increment_version.outputs.version }}
-          # Reemplazar PLACEHOLDER con la nueva versión de la imagen en el archivo deployment.yaml
-           sed -i "s|agustinribotta/springboot-app:\$VERSION|agustinribotta/springboot-app:$VERSION|" kubernetes/deployment.yaml
+          # Replace the placeholder version with the new version in deployment.yaml
+          sed -i "s|agustinribotta/springboot-app:.*|agustinribotta/springboot-app:$VERSION|" kubernetes/deployment.yaml
 
+      # Step 5: Commit the changes and push to the repository
       - name: Commit and Push Changes
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
-          git remote set-url origin git@github.com:AgustinRibotta/demo.git
-          git add version.txt kubernetes/deployment.yaml
+          git add version.txt kubernetes/deployment.yaml  # Add changed files
           if git diff --quiet; then
-            echo "No changes to commit"
+            echo "No changes to commit"  # If no changes, skip commit
           else
-            git commit -m "Update image to version $VERSION"
-            git push origin main
-          fi
+            git commit -m "Update image to version $VERSION"  # Commit with new version
+            git push origin main  # Push changes to the main branch
