@@ -36,7 +36,7 @@ jobs:
         run: |
           VERSION=${{ steps.increment_version.outputs.version }}
           # Reemplazar PLACEHOLDER con la nueva versión de la imagen en el archivo deployment.yaml
-          sed -i "s/springboot-app:PLACEHOLDER/springboot-app:$VERSION/" kubernetes/deployment.yaml
+           sed -i "s|agustinribotta/springboot-app:\$VERSION|agustinribotta/springboot-app:$VERSION|" kubernetes/deployment.yaml
 
       - name: Commit and Push Changes
         run: |
