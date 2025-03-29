@@ -12,10 +12,3 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: agustin-dev
-  syncPolicy:
-    automated:  # Automatically deploy new changes
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-
