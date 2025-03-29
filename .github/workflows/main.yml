@@ -63,16 +63,25 @@ jobs:
 
       # Step 9: Commit the changes and push to the repository
       - name: Commit and Push Changes
-       # run: |
-       #   git config --global user.email "github-actions@github.com"
-        #  git config --global user.name "GitHub Actions"
-         # git remote set-url origin git@github.com:AgustinRibotta/demo.git
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git remote set-url origin git@github.com:AgustinRibotta/demo.git
+
+          # Verifica si el último commit fue hecho por GitHub Actions
+          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
+
+          if [ "$LAST_COMMIT_AUTHOR" = "GitHub Actions" ]; then
+            echo "El último commit fue hecho por GitHub Actions. No se realizará otro commit."
+            exit 0
+          fi
 
           # Check if there are changes to commit
-          #if git diff --quiet kubernetes/deployment.yaml; then
-           # echo "No changes to commit"
-         # else
-          #  git add kubernetes/deployment.yaml
-           # git commit -m "Update image to version $VERSION"
-            #git push origin main 
-          #fi
+          if git diff --quiet kubernetes/deployment.yaml; then
+            echo "No changes to commit"
+          else
+            git add kubernetes/deployment.yaml
+            git commit -m "Update image to version $VERSION"
+            git push origin main 
+          fi
+
