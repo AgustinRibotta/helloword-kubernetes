@@ -16,7 +16,7 @@ public class controllers {
     
     @GetMapping("/hello")
     public String helloaname() {
-        return new String("Hello, Agustin");
+        return new String("Test2");
     }
 
     @GetMapping("/bye")
