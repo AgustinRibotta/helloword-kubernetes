@@ -1,4 +1,4 @@
-name: Deploy to Minikube
+name: Update Image Version
 
 on:
   push:
@@ -6,46 +6,35 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  update-image-version:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up SSH key
+      - name: Read the current version from version.txt
+        id: get_version
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          if [ -f version.txt ]; then
+            VERSION=$(cat version.txt)
+          else
+            VERSION=0
+          fi
+          echo "Current version: $VERSION"
+          echo "::set-output name=version::$VERSION"
 
-      - name: Set up Java 17
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Build with Maven
-        run: mvn clean package
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and Push Docker Image
+      - name: Increment version
+        id: increment_version
         run: |
-          VERSION=$(date +'%Y%m%d%H%M%S')  # Versión única basada en la fecha y hora
-          docker build -t agustinribotta/springboot-app:$VERSION .
-          docker push agustinribotta/springboot-app:$VERSION
+          VERSION=$((${{ steps.get_version.outputs.version }} + 1))
+          echo "New version: $VERSION"
+          echo $VERSION > version.txt
+          echo "::set-output name=version::$VERSION"
 
-      - name: Update Deployment YAML with correct version
+      - name: Update Docker Image Version in Deployment YAML
         run: |
+          VERSION=${{ steps.increment_version.outputs.version }}
           # Reemplazar PLACEHOLDER con la nueva versión de la imagen en el archivo deployment.yaml
           sed -i "s/springboot-app:PLACEHOLDER/springboot-app:$VERSION/" kubernetes/deployment.yaml
 
@@ -54,7 +43,7 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
           git remote set-url origin git@github.com:AgustinRibotta/demo.git
-          git add kubernetes/deployment.yaml
+          git add version.txt kubernetes/deployment.yaml
           if git diff --quiet; then
             echo "No changes to commit"
           else
