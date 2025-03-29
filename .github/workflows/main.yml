@@ -32,7 +32,7 @@ jobs:
 
       # Step 4: Verify if the VERSION variable is correctly passed
       - name: Verify VERSION variable
-        run: echo "The generated version is: $VERSION"
+        run: echo "The generated version is:$VERSION"
 
       # Step 5: Update the Docker image version in the Kubernetes deployment file
       - name: Update Docker Image Version in Deployment YAML
