@@ -66,6 +66,6 @@ jobs:
           if git diff --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update image to version $VERSION"
+            git commit -a -m "Update image to version $VERSION"
             git push origin main
           fi
