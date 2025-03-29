@@ -30,6 +30,11 @@ jobs:
           echo "Generated version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV  
 
+      # Step 4: Compile the Java application (Maven)
+      - name: Build Java application using Maven
+        run: |
+          mvn clean install  # Para Maven, construye el archivo .jar en el directorio target
+
       # Step 4: Verify the VERSION variable is correctly passed
       - name: Verify VERSION variable
         run: echo "The generated version is:$VERSION"
