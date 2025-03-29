@@ -33,6 +33,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t agustinribotta/springboot-app:latest .
-          docker push agustinribotta/springboot-app:latest
+          VERSION=$(date +'%Y%m%d%H%M%S')  # Unique version based on timestamp
+          docker build -t agustinribotta/springboot-app:$VERSION .
+          docker push agustinribotta/springboot-app:$VERSION
 
