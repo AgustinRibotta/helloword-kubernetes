@@ -14,6 +14,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      # Step 1: Verifica si el último commit fue de GitHub Actions
+      - name: Check Last Commit Author
+        run: |
+          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
+          if [ "$LAST_COMMIT_AUTHOR" = "GitHub Actions" ]; then
+            echo "El último commit fue hecho por GitHub Actions. Deteniendo workflow."
+            exit 0
+          fi
+
       # Step 2: Set up SSH key for Git authentication
       - name: Set up SSH key
         run: |
