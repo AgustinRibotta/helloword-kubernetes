@@ -14,22 +14,29 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Generate a unique version using the current timestamp
+      # Step 2: Set up SSH key for Git authentication
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519  # Agregar clave SSH privada
+          chmod 600 ~/.ssh/id_ed25519  # Cambiar permisos de la clave privada
+          ssh-keyscan github.com >> ~/.ssh/known_hosts  # Agregar el host de GitHub a los conocidos
+
+      # Step 3: Generate a unique version using the current timestamp
       - name: Generate version using timestamp
         id: generate_version
         run: |
           VERSION=$(date +'%Y%m%d%H%M%S')  # Generating a unique version based on current date and time
           echo "Generated version: $VERSION"
-          echo "::set-output name=version::$VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV  # Save the version to the environment variable
 
-      # Step 3: Update the Docker image version in the Kubernetes deployment file
+      # Step 4: Update the Docker image version in the Kubernetes deployment file
       - name: Update Docker Image Version in Deployment YAML
         run: |
-          VERSION=${{ steps.generate_version.outputs.version }}
-          # Replace the placeholder version in deployment.yaml with the new version
+          # The VERSION variable is already available as an environment variable
           sed -i "s|agustinribotta/springboot-app:.*|agustinribotta/springboot-app:$VERSION|" kubernetes/deployment.yaml
 
-      # Step 4: Commit the changes and push to the repository
+      # Step 5: Commit the changes and push to the repository
       - name: Commit and Push Changes
         run: |
           git config --global user.email "github-actions@github.com"
