@@ -44,9 +44,10 @@ jobs:
           docker build -t agustinribotta/springboot-app:$VERSION .
           docker push agustinribotta/springboot-app:$VERSION
 
-      - name: Update Deployment YAML
+      - name: Update Deployment YAML with correct version
         run: |
-          sed -i "s/springboot-app:latest/springboot-app:$VERSION/" kubernetes/deployment.yaml
+          # Reemplazar "PLACEHOLDER" con el valor real de VERSION en el archivo deployment.yaml
+          sed -i "s/springboot-app:PLACEHOLDER/springboot-app:$VERSION/" kubernetes/deployment.yaml
 
       - name: Commit and Push Changes
         run: |
