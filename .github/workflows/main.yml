@@ -40,13 +40,13 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          VERSION=$(date +'%Y%m%d%H%M%S')  # Unique version based on timestamp
+          VERSION=$(date +'%Y%m%d%H%M%S')  # Versión única basada en la fecha y hora
           docker build -t agustinribotta/springboot-app:$VERSION .
           docker push agustinribotta/springboot-app:$VERSION
 
       - name: Update Deployment YAML with correct version
         run: |
-          # Reemplazar "PLACEHOLDER" con el valor real de VERSION en el archivo deployment.yaml
+          # Reemplazar PLACEHOLDER con la nueva versión de la imagen en el archivo deployment.yaml
           sed -i "s/springboot-app:PLACEHOLDER/springboot-app:$VERSION/" kubernetes/deployment.yaml
 
       - name: Commit and Push Changes
