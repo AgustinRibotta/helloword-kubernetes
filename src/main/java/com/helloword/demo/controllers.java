@@ -11,7 +11,7 @@ public class controllers {
 
     @GetMapping()
     public String hello() {
-        return new String("Hi");
+        return new String("Last attempt");
     }
     
     @GetMapping("/hello")
