@@ -18,25 +18,33 @@ jobs:
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519  # Agregar clave SSH privada
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519  
           chmod 600 ~/.ssh/id_ed25519  # Cambiar permisos de la clave privada
-          ssh-keyscan github.com >> ~/.ssh/known_hosts  # Agregar el host de GitHub a los conocidos
+          ssh-keyscan github.com >> ~/.ssh/known_hosts 
 
       # Step 3: Generate a unique version using the current timestamp
       - name: Generate version using timestamp
         id: generate_version
         run: |
-          VERSION=$(date +'%Y%m%d%H%M%S')  # Generating a unique version based on current date and time
+          VERSION=$(date +'%Y%m%d%H%M%S') 
           echo "Generated version: $VERSION"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV  # Save the version to the environment variable
+          echo "VERSION=$VERSION" >> $GITHUB_ENV  # Save version to the environment variable
 
-      # Step 4: Update the Docker image version in the Kubernetes deployment file
+      # Step 4: Verify if the VERSION variable is correctly passed
+      - name: Verify VERSION variable
+        run: echo "The generated version is: $VERSION"
+
+      # Step 5: Update the Docker image version in the Kubernetes deployment file
       - name: Update Docker Image Version in Deployment YAML
         run: |
           VERSION=${{ env.VERSION }}  # Access the VERSION environment variable
           sed -i "s|agustinribotta/springboot-app:.*|agustinribotta/springboot-app:$VERSION|" kubernetes/deployment.yaml
 
-      # Step 5: Commit the changes and push to the repository
+      # Step 6: Check if there are changes
+      - name: Check if there are changes
+        run: git status
+
+      # Step 7: Commit the changes and push to the repository
       - name: Commit and Push Changes
         run: |
           git config --global user.email "github-actions@github.com"
